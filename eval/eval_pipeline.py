@@ -83,10 +83,17 @@ def eval_pipeline(
     recall_score = true_positives / (true_positives + false_negatives + 1e-6)
 
     F_betas = (1 + beta**2) * (precision_score * recall_score) / ((beta**2 * precision_score) + recall_score + 1e-6)
-    F_betas_mean = torch.mean(F_betas)
 
-    precision_score_mean = torch.mean(precision_score[:]) 
-    recall_score_mean = torch.mean(recall_score[:])  
+    # If one of the classes is not present in the batch, set the score to NaN for that class
+    for c in range(num_classes - 1):
+        if true_positives[c] == 0 and false_positives[c] == 0 and false_negatives[c] == 0:
+            precision_score[c] = float('nan')
+            recall_score[c] = float('nan')
+            F_betas[c] = float('nan')
+
+    precision_score_mean = torch.nanmean(precision_score[:])
+    recall_score_mean = torch.nanmean(recall_score[:])
+    F_betas_mean = torch.nanmean(F_betas)
 
     batch_size = target.shape[0]
 
