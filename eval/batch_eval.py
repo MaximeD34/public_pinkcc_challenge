@@ -13,6 +13,10 @@ def batch_evaluate_files(
 ):
     assert len(pred_file_paths) == len(target_file_paths), "Prediction and target lists must be the same length"
     total = len(pred_file_paths)
+
+    pred_file_paths = sorted(pred_file_paths)
+    target_file_paths = sorted(target_file_paths)
+
     for i in range(0, total, batch_size):
         pred_batch = pred_file_paths[i:i+batch_size]
         target_batch = target_file_paths[i:i+batch_size]

@@ -30,12 +30,21 @@ def pad_tensor(tensor, target_shape):
     return padded_tensor
 
 def paired_file_names_to_stacked_tensors(pred_file_names, target_file_names):
-    # Match by basename
+
+    pred_file_names = sorted(pred_file_names)
+    target_file_names = sorted(target_file_names)
+    
+    pred_file_names = [os.path.normpath(f) for f in pred_file_names]
+    target_file_names = [os.path.normpath(f) for f in target_file_names]
+    
     pred_map = {os.path.basename(f): f for f in pred_file_names}
     target_map = {os.path.basename(f): f for f in target_file_names}
+ 
     common_names = sorted(set(pred_map) & set(target_map))
+    
     if not common_names:
         raise ValueError("No matching file names found between pred and target lists.")
+        
     pred_matched = [pred_map[name] for name in common_names]
     target_matched = [target_map[name] for name in common_names]
 

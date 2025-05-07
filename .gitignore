@@ -1,2 +1,4 @@
 .venv/
 .DS_Store
+eval/__pycache__/
+web/__pycache__/
